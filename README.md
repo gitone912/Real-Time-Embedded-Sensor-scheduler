@@ -1,590 +1,681 @@
-# Timeline Scheduler — FreeRTOS Time-Triggered Real-Time Kernel Extension
+Real-Time Embedded Sensor Scheduler
 
-A deterministic, Time-Triggered Scheduler (TTS) built on top of FreeRTOS, targeting ARM Cortex-M microcontrollers (emulated via QEMU). The system enforces strict temporal isolation between Hard Real-Time (HRT) and Soft Real-Time (SRT) tasks within a cyclic Major Frame architecture, with full observability through a tracing subsystem and an automated Python test suite.
+A FreeRTOS-based real-time embedded system for the ARM Cortex-M3 platform, extended with a simulated temperature-sensing pipeline, static inter-task communication, runtime telemetry, deadline monitoring, and QEMU-based validation.
 
----
+The project combines a time-triggered scheduler with an application pipeline:
 
-## Table of Contents
+Sensor → Static Queue → Processing Task
 
-1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Project Structure](#project-structure)
-4. [Scheduling Model](#scheduling-model)
-5. [Core Components](#core-components)
-6. [Task Configuration](#task-configuration)
-7. [Tracing & Observability](#tracing--observability)
-8. [Test Suite](#test-suite)
-9. [Build & Run](#build--run)
-10. [Configuration Reference](#configuration-reference)
-11. [Known Limitations & Design Decisions](#known-limitations--design-decisions)
+The scheduler manages Hard Real-Time (HRT) and Soft Real-Time (SRT) tasks across repeated major frames while the application collects and processes simulated sensor data.
 
----
+Project Overview
 
-## Overview
+This project was developed to study and demonstrate practical embedded real-time concepts:
 
-This project extends the FreeRTOS kernel with a **Time-Triggered Architecture (TTA)** 
-scheduler. Unlike standard priority-based schedulers, the TTA paradigm pre-assigns
-every hard task to a fixed time slot within a repeating **Major Frame**. This eliminates
-non-deterministic preemption and provides provable temporal guarantees 
-— a requirement in safety-critical embedded domains (avionics, automotive, industrial control).
+FreeRTOS task scheduling
 
-Key properties:
+Time-triggered execution
 
-- **Hard Real-Time (HRT)** tasks run in pre-allocated, 
-- non-overlapping sub-frame slots. Missing a deadline is detected, the task is immediately killed and info logged.
-- **Soft Real-Time (SRT)** tasks execute in remaining slack time using a FIFO policy, and are preempted the instant an HRT task's slot begins.
-- All memory is **statically allocated** — no heap usage at runtime.
-- A **circular trace buffer** captures scheduling events with cycle-accurate timestamps.
-- A **Python test runner** orchestrates build, QEMU emulation, log parsing, and automated pass/fail checks.
+HRT and SRT task management
 
----
+ARM Cortex-M3 execution
 
-## Architecture
+Static memory allocation
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Major Frame (N ticks)               │
-│  ┌──────────┬──────────┬──────────┬────────────────────┐│
-│  │  HRT: T1 │  HRT: T2 │  HRT: T3 │   Slack (SRT)      ││
-│  │  [0..4]  │  [5..10] │  [13..14]│                    ││
-│  └──────────┴──────────┴──────────┴────────────────────┘│
-│         Sub-Frame 0        Sub-Frame 1      ...         │
-└─────────────────────────────────────────────────────────┘
-```
+Inter-task communication using FreeRTOS queues
 
-The scheduler is driven entirely by the **SysTick interrupt** 
-(via FreeRTOS's `xPortSysTickHandler`). On every tick, the Timeline Tick Hook:
+Sensor-data acquisition and processing
 
-1. Enforces HRT deadlines (suspends overrunning tasks).
-2. Activates HRT tasks whose start time matches the current tick.
-3. Reclaims slack time for SRT task execution.
-4. Resets all state at the Major Frame boundary for deterministic cyclic repetition.
+UART runtime telemetry
 
----
+Deadline monitoring
 
-## Project Structure
+Fault diagnosis and stack/context debugging
 
-```
+QEMU-based embedded-system validation
+
+The scheduler framework is based on the existing EOSproject / FreeRTOS time-triggered scheduling framework and has been extended with application-level embedded functionality and debugging work.
+
+Upstream project:
+https://github.com/marco-pedron/EOSproject
+
+Attribution: This repository is an extension of an existing FreeRTOS/time-triggered scheduler framework. Original source attribution and licensing are retained; the application-level sensor pipeline, telemetry, integration, debugging, and project-specific changes are the work added in this repository.
+
+System Architecture
+
+                    +----------------------+
+                    | Time-Triggered       |
+                    | FreeRTOS Scheduler   |
+                    +----------+-----------+
+                               |
+                +--------------+--------------+
+                |                             |
+          HRT Tasks                       SRT Tasks
+         HT1 / HT2 / HT3             ST1 / ST2 / ST3
+                                          |
+                                          v
+                               +---------------------+
+                               | Temperature Sensor  |
+                               |   Simulation Task   |
+                               +----------+----------+
+                                          |
+                                          | SensorData_t
+                                          v
+                               +---------------------+
+                               | Static FreeRTOS     |
+                               | Queue               |
+                               +----------+----------+
+                                          |
+                                          v
+                               +---------------------+
+                               | Sensor Processing   |
+                               | Task                |
+                               +----------+----------+
+                                          |
+                                          v
+                               +---------------------+
+                               | UART Telemetry      |
+                               | Statistics / Logs   |
+                               +---------------------+
+
+Application Pipeline
+
+1. Sensor simulation
+
+A lightweight simulated temperature sensor generates timestamped readings:
+
+typedef struct {
+    uint32_t timestamp;
+    int32_t temperature_c10;
+} SensorData_t;
+
+Temperature is represented in tenths of a degree Celsius to avoid unnecessary floating-point state in the core data path.
+
+Example telemetry:
+
+SENSOR: t=304 temp=30.0C status=OK
+
+2. Static queue
+
+Sensor data is passed between tasks through a statically allocated FreeRTOS queue.
+
+Sensor Task
+     |
+     v
+Static Queue
+     |
+     v
+Processing Task
+
+The queue avoids dynamic allocation for this application and is compatible with the project's static-allocation configuration.
+
+3. Processing task
+
+The processing task consumes sensor samples and maintains runtime counters for:
+
+samples received
+
+samples processed
+
+queue drops
+
+high-temperature events
+
+Example:
+
+SENSOR STATS: samples=310 processed=310 drops=0 high_temp=0
+
+4. Runtime diagnostics
+
+UART output is used to observe:
+
+major-frame transitions
+
+sensor readings
+
+task execution
+
+HRT/SRT activity
+
+deadline monitoring
+
+queue statistics
+
+scheduler overhead
+
+fault diagnostics
+
+Real-Time Scheduling
+
+The project separates workload into Hard Real-Time (HRT) and Soft Real-Time (SRT) tasks.
+
+Example generated schedule:
+
+Task
+
+Type
+
+Start
+
+End
+
+HT1
+
+HRT
+
+12
+
+17
+
+HT2
+
+HRT
+
+23
+
+30
+
+HT3
+
+HRT
+
+37
+
+40
+
+ST1
+
+SRT
+
+0
+
+0
+
+ST2
+
+SRT
+
+0
+
+0
+
+ST3
+
+SRT
+
+0
+
+0
+
+The application maps the SRT tasks to the embedded pipeline:
+
+ST1 → vSensorTask
+ST2 → vSensorProcessingTask
+ST3 → vGenericTaskWrapper
+
+The system runs the schedule repeatedly over major frames.
+
+Key Contributions
+
+Embedded application layer
+
+Added a simulated temperature sensor module
+
+Added a reusable SensorData_t structure
+
+Added static FreeRTOS queue infrastructure
+
+Implemented Sensor → Queue → Processor communication
+
+Added runtime counters and status reporting
+
+Added UART telemetry for live system observation
+
+Scheduler integration
+
+Integrated the application tasks into the generated HRT/SRT schedule
+
+Connected the scheduler workload generator with the embedded application
+
+Configured task functions and task stack sizes
+
+Preserved the original time-triggered scheduling workflow
+
+Debugging and fault analysis
+
+During development, task-context/stack corruption was investigated using:
+
+ARM addr2line
+
+ARM objdump
+
+QEMU execution
+
+FreeRTOS scheduler/port source inspection
+
+HardFault register dumps
+
+The HardFault handler was extended to report registers such as:
+
+PC
+LR
+PSP
+R0-R3
+R12
+xPSR
+
+This made it possible to identify failures occurring during FreeRTOS PendSV context restoration and to stabilize the demo execution path.
+
+Validation
+
+The project was executed using an ARM Cortex-M3 target under QEMU.
+
+A stable validation run demonstrated:
+
+samples      = 310
+processed    = 310
+queue drops  = 0
+high-temp    = 0
+
+The run also showed:
+
+repeated major-frame execution
+
+HRT/SRT task activity
+
+Sensor → Queue → Processor communication
+
+scheduler overhead around 1.18% in the observed run
+
+continued execution through many major frames
+
+no HardFault during the stable demonstration run
+
+The scheduler's deadline-monitoring output also identified occasional HT3 deadline misses during some frames, demonstrating that the monitoring and diagnostic path is active rather than assuming perfect execution.
+
+Repository Structure
+
 .
-├── main.c                   # Entry point: UART init, scheduler setup, static task creation
-├── timeline.c               # Frontend API: configuration binding, scheduler initialization
-├── timeline_internal.c      # Backend engine: tick hook, schedule hook, task state machines
-├── tasks_generated.c        # Auto-generated task configuration array (from JSON via Python tooling)
-├── trace.c                  # Lock-free circular trace buffer (ISR-safe)
-├── trace_dumper.c           # Highest-priority task that drains and formats trace events over UART
-├── workloads.c              # Generic task wrapper + CPU-bound workload simulation (MAC loop)
-├── startup.c                # Bare-metal vector table, Reset/HardFault handlers
-├── uart.c                   # Minimal UART driver for QEMU MPS2+ AN385 target
+├── Demo/
+│   ├── FreeRTOS/
+│   ├── Headers/
+│   ├── Tools/
+│   ├── suite/
+│   ├── main.c
+│   ├── sensor.c
+│   ├── sensor_task.c
+│   ├── sensor_queue.c
+│   ├── timeline.c
+│   ├── timeline_internal.c
+│   ├── trace.c
+│   ├── trace_dumper.c
+│   ├── workloads.c
+│   ├── startup.c
+│   ├── uart.c
+│   ├── tasks_generated.c
+│   ├── FreeRTOSConfig.h
+│   └── Makefile
 │
-├── Headers/                 # Header files for all above modules
+├── FreeRTOS/
 │
-├── integrated_test.py       # Main Python test runner (CLI entry point)
-├── suite/                   # JSON test configuration files
-│   └── *.json               # One file per test scenario
+├── test_reports/
 │
-└── Tools/                   # Python test infrastructure modules
-    ├── build.py             # Docker/native build and QEMU execution
-    ├── suite.py             # Test config discovery and parsing
-    ├── log_parser.py        # UART log parsing → structured metrics
-    ├── checks.py            # Pass/fail check definitions
-    ├── metrics_view.py      # Console metrics pretty-printer
-    ├── reporting.py         # JSON/HTML report generation
-    ├── visualization.py     # matplotlib chart generation (optional)
-    ├── models.py            # Data models: TestMeta, TestMetrics, TestResult, CheckResult
-    └── ui.py                # Console UI helpers (banners, prompts, colour output)
-```
+├── project_1.pdf
+├── project_1_presentation.pdf
+├── TEST_README.md
+├── REALREADME.md
+├── Dockerfile
+└── README.md
 
----
+Important Source Files
 
-## Scheduling Model
+File
 
-### Major Frame & Sub-Frames
+Purpose
 
-The schedule is defined by two parameters:
+Demo/sensor.c
 
-| Parameter            | Description                                     |
-|----------------------|-------------------------------------------------|
-| `ulMajorFrameTicks`  | Total duration of one repeating schedule cycle  |
-| `ulSubFrameTicks`    | Duration of each sub-frame partition            |
+Simulated temperature sensor
 
-The Major Frame is divided into equal sub-frames. Each HRT task must fit entirely within one sub-frame — it cannot cross a sub-frame boundary.
-This constraint is validated statically at startup before the scheduler starts by the `xTimelineInternal_InitAndValidate()` function. The sub-frame ID for each task is computed as:
+Demo/Headers/sensor.h
 
-```
-ulSubFrame_id = task.ulStart_time / ulSubFrameTicks
-``` 
+Sensor interface and data structure
 
-### HRT Task Slot Constraints
+Demo/sensor_queue.c
 
-Each HRT task is assigned a `[ulStart_time, ulEnd_time)` interval (in ticks). The scheduler enforces at initialization:
+Static FreeRTOS queue implementation
 
-- **Validity**: `ulStart_time < ulEnd_time`
-- **No overlap** between any two HRT tasks (guaranteed by chronological sorting + sequential end-time check)
-- **Sub-frame confinement**: `ulEnd_time ≤ (subframe_id + 1) * ulSubFrameTicks`
-- **Major frame confinement**: `ulEnd_time ≤ ulMajorFrameTicks`
+Demo/Headers/sensor_queue.h
 
-Any violation causes the system to halt with a diagnostic UART message before the first tick fires.
+Queue interface
 
-### HRT Execution Flow
+Demo/sensor_task.c
 
-```
-SysTick ISR
-    │
-    ├─ [tick == task.ulStart_time] ──► Resume HRT task (bypasses FreeRTOS priority)
-    │                                  Preempt any running SRT task
-    │                                  Log: HRT START
-    │
-    ├─ [tick == task.ulEnd_time]   ──► Suspend HRT task if still running
-    │                                  Log: DEADLINE MISS
-    │
-    └─ [task calls vTimelineMarkHRTComplete()] ──► Task voluntarily self-suspends
-                                                   Log: HRT COMPLETE
-                                                   Attempt SRT slack reclaim
-```
+Sensor and processing tasks
 
-### SRT Execution & Slack Reclaiming
+Demo/main.c
 
-SRT tasks are held in a FIFO queue built from their declaration order 
-in `tasks_generated.c`. They execute only when no HRT task is active and they can 
-cross sub-frame boundaries freely. The tick hook attempts to reclaim slack time for 
-SRT execution whenever an HRT task completes early or when no HRT tasks are active.
+System initialization and scheduler startup
 
-| Event    | Trigger                                           | Log            |
-|----------|---------------------------------------------------|----------------|
-| Start    | SRT task receives CPU for the first time          | `SRT START`    |
-| Preempt  | HRT slot begins while SRT is running              | `SRT PREEMPT`  |
-| Resume   | HRT slot ends / completes early                   | `SRT RESUME`   |
-| Complete | Task calls `vTimelineMarkSRTTaskCompleted()`       | `SRT COMPLETE` |
-| Killed   | Task still running at Major Frame boundary        | `SRT KILLED`   |
+Demo/tasks_generated.c
 
-A preempted SRT task is suspended (not destroyed) and takes priority over new queue entries when the CPU becomes available again.
+Generated task configuration
 
-### Schedule Hook
+Demo/timeline.c
 
-`xTimelineScheduleHook()` overrides the FreeRTOS task selection mechanism, bypassing the standard ready-list priority resolution entirely. It returns:
+Scheduler configuration/integration
 
-1. The active HRT task handle (if not suspended), **or**
-2. The active SRT task handle (if not suspended), **or**
-3. `NULL` → yields to the FreeRTOS idle task.
+Demo/timeline_internal.c
 
-This achieves true time-triggered determinism independent of FreeRTOS priority assignments.
+Major-frame timeline logic
 
-### Major Frame Reset
+Demo/startup.c
 
-At `tick == ulMajorFrameTicks - 1` the engine:
+Startup code and HardFault diagnostics
 
-1. Logs `DEADLINE MISS` for any HRT task still active.
-2. Terminates and logs any running SRT task (`SRT KILLED`).
-3. Rewinds the SRT FIFO queue pointer to the list head — O(1), no list rebuild.
-4. Calls `vTaskTimelineReset()` on every task to restore its initial stack frame and program counter, ensuring true cyclic determinism across frames.
+Demo/Makefile
 
----
+Build and QEMU execution
 
-## Core Components
+Demo/Tools/workload_gen.py
 
-### `timeline.c` — Frontend API
+Workload/task configuration generation
 
-| Function | Description |
-|---|---|
-| `pxGetTimelineConfig()` | Binds the auto-generated task arrays to the `TimelineConfig_t` struct |
-| `vConfigureScheduler()` | Validates config, creates all tasks statically, suspends them, activates the engine |
-| `prvTimeline_PrintSubFrames()` | Debug utility: prints sub-frame assignment over UART before first frame |
+Build and Run
 
-### `timeline_internal.c` — Scheduler Engine
+Environment
 
-| Function | Description |
-|---|---|
-| `xTimelineInternal_InitAndValidate()` | Sorts tasks, runs offline temporal constraint validation |
-| `vTimelineInternal_Activate()` | Arms the tick hook and initialises the SRT FIFO queue |
-| `xTimelineTickHook()` | Called on every SysTick; drives all scheduling decisions (phases 1–4) |
-| `xTimelineScheduleHook()` | Overrides FreeRTOS task selection |
-| `vTimelineMarkHRTComplete()` | Called by HRT tasks on voluntary early completion |
-| `vTimelineMarkSRTTaskCompleted()` | Called by SRT tasks on completion |
-| `vTimelineUpdateJitterStats()` | Updates per-task min/max dispatch latency in cycles |
-| `pxTimeline_FindTaskByHandle()` | Maps a `TaskHandle_t` back to its `TimelineTaskConfig_t` |
+The project can be built in WSL2 / Ubuntu using the ARM GCC toolchain and QEMU.
 
-#### Task Sorting Algorithm
+Required tools:
 
-At initialization, tasks are reordered using a **stable insertion sort** that enforces:
-
-1. All HRT tasks precede all SRT tasks in the array.
-2. HRT tasks are sorted chronologically by `ulStart_time`.
-3. The relative declaration order of SRT tasks is preserved (FIFO guarantee).
-
-The sort runs once, offline, before the scheduler starts — its O(N²) complexity has no runtime impact.
-
-### `trace.c` — Trace Buffer
-
-A lock-free, ISR-safe **circular ring buffer** of 8 192 `xTraceEvent_t` entries. Events are silently discarded on overflow rather than blocking — this preserves HRT timing guarantees at the cost of potential telemetry loss under high saturation. Writes use `portSET_INTERRUPT_MASK_FROM_ISR()` for safe concurrent access from both task and ISR contexts.
-
-Each event stores:
-
-| Field                    | Description                                            |
-|--------------------------|--------------------------------------------------------|
-| `ulTimestamp`            | FreeRTOS system tick counter at logging time           |
-| `ulMajorFrameTimestamp`  | Tick offset within the current major frame             |
-| `ucEventID`              | Event type enum value                                  |
-| `ulData`                 | Payload: task handle, cycle count, or idle tick count  |
-
-### `trace_dumper.c` — Trace Consumer
-
-A dedicated FreeRTOS task for dumping trace events over UART.
-It is crated in the main.c .
-It drains the trace buffer in a polling loop, yielding with `vTaskDelay(1 ms)`.
-In any case also the trace dumper is considered a soft real-time task, as it runs 
-in the idle time between hard real-time tasks, and it is not allowed to preempt them.
-It formats events into human-readable strings and outputs them over UART.
-
-Kernel overhead is computed per frame as a percentage of the total cycle budget using 64-bit arithmetic to prevent overflow:
-
-```
-overhead% = (ulOverheadCycles × 10 000) / (ulMajorFrameTicks × CYCLES_PER_TICK)
-```
-
-The integer and fractional parts are separated for fixed-point formatted output (e.g., `0.17%`).
-
-### `workloads.c` — Task Payload
-
-`vGenericTaskWrapper` is the universal task function used by all configured tasks. It:
-
-1. Reads `ulScalingFactor` from its static parameter pointer.
-2. Calls `vSimulateEmbeddedWorkload(ulScalingFactor)` — a volatile Multiply-Accumulate loop representative of DSP / PID control workloads. The `volatile` qualifier prevents the compiler from optimising the loop away.
-3. Reports completion to the timeline scheduler via `vTimelineMarkHRTComplete()` or `vTimelineMarkSRTTaskCompleted()` depending on task type.
-
-### `startup.c` — Bare-Metal Bootstrap
-
-Provides the ARM Cortex-M **vector table** (placed in `.isr_vector` section), mapping:
-
-- `Reset_Handler` → calls `main()` directly.
-- `HardFault_Handler` → captures registers from the fault stack frame and prints them over UART via `prvGetRegistersFromStack()`.
-- FreeRTOS interrupt handlers: `vPortSVCHandler`, `xPortPendSVHandler`, `xPortSysTickHandler`.
-
-### `uart.c` — UART Driver
-
-Minimal polling UART driver targeting the **ARM MPS2+ AN385** QEMU model (UART0 at a fixed MMIO address). Initializes at 16× baud divisor and provides `UART_printf()` for null-terminated string output. No interrupts, no buffering.
-
----
-
-## Task Configuration
-
-Tasks are defined in `tasks_generated.c`, intended to be produced automatically by the Python tooling from a JSON schedule definition. Each entry uses `TimelineTaskConfig_t`:
-
-```c
-typedef struct {
-    const char            *pcName;           // Task name string
-    TaskFunction_t         pvTaskFunction;   // Task function pointer
-    TaskType_t             xType;            // HRT_TASK or SRT_TASK
-    uint32_t               xStackDepth;      // Stack size in words
-    StaticTask_t          *pxTaskBuffer;     // Pointer to static TCB buffer
-    StackType_t           *pxStackBuffer;    // Pointer to static stack buffer
-    TaskHandle_t           xTaskHandle;      // Populated at runtime by vConfigureScheduler()
-    const void            *pvTaskParams;     // Pointer to workload scaling factor
-    uint32_t               ulStart_time;     // Slot start tick (HRT only)
-    uint32_t               ulEnd_time;       // Slot end tick   (HRT only)
-    uint32_t               ulSubframe_id;    // Computed at init from start_time / SubFrameTicks
-    uint32_t               ulMaxDelay;       // Max observed dispatch jitter (cycles)
-    uint32_t               ulMinDelay;       // Min observed dispatch jitter (cycles)
-    ListItem_t             xSRTListItem;     // FreeRTOS list node for the SRT FIFO queue
-} TimelineTaskConfig_t;
-```
-
-### Example Task Set
-
-Major frame: **30 ticks** — Sub-frame: **5 ticks**
-
-| Name | Type | Start | End | Workload Iterations |
-|------|------|-------|-----|---------------------|
-| HT1  | HRT  | 0     | 4   | 2 500               |
-| HT2  | HRT  | 5     | 10  | 5 000               |
-| HT3  | HRT  | 13    | 14  | 50                  |
-| HT4  | HRT  | 15    | 17  | 220                 |
-| HT5  | HRT  | 18    | 20  | 400                 |
-| HT6  | HRT  | 20    | 24  | 4 000               |
-| ST1  | SRT  | —     | —   | 5 000               |
-| ST2  | SRT  | —     | —   | 7 000               |
-
-> **Note:** HT6 starts exactly at tick 20, which is the start of sub-frame [20..24]. The sub-frame confinement check (`ulEnd_time > xSlotEnd`) correctly assigns it to this sub-frame. Designers should be aware that tasks starting exactly on a sub-frame boundary belong to the *new* sub-frame.
-
----
-
-## Tracing & Observability
-
-### UART Log Format
-
-Each event is emitted as a tab-separated line:
-
-```
-[ <frame_tick>  <sys_tick> ] <EVENT>:   <task_name> ( SubFrame: <N> )   [extra fields]
-```
-
-### Sample Output
-
-```
---- DEBUG: Sorted Task Array ---
-[ 0 ] Name: HT1    Type: HRT   Start: 0
-[ 1 ] Name: HT2    Type: HRT   Start: 5
-...
-[ 7 ] Name: ST2    Type: SRT   Start: 0
---------------------------------
-
-[ 00000  00001 ] HRT START:    HT1 ( SubFrame: 0 )   Deadline @00004   delay max:14 cycles   delay min: 14 cycles
-[ 00004  00005 ] HRT COMPLETE: HT1 ( SubFrame: 0 )
-[ 00005  00006 ] HRT START:    HT2 ( SubFrame: 1 )   Deadline @00010   delay max:0 cycles    delay min: 0 cycles
-[ 00010  00011 ] DEADLINE MISS!    HT2
-[ 00010  00011 ] SRT START:    ST1 ( SubFrame: 2 )
-[ 00013  00014 ] SRT PREEMPT:  ST1 ( SubFrame: 2 )
-[ 00014  00015 ] SRT RESUME:   ST1 ( SubFrame: 2 )
-[ 00018  00019 ] SRT COMPLETE: ST1 ( SubFrame: 3 )
-[ 00029  00030 ] CPU STATS: Idle Ticks = 2
-[ 00029  00030 ] KERNEL OVERHEAD: 1480 Cycles (0.20%)
-
-[ 00029  00030 ] MAJOR FRAME
-```
-
-### Event Reference
-
-| Event ID               | Name               | Description                                        |
-|------------------------|--------------------|----------------------------------------------------|
-| `eTraceHrtStart`       | `HRT START`        | Tick hook activates an HRT task                    |
-| `eTraceHrtComplete`    | `HRT COMPLETE`     | Task self-reports early completion                 |
-| `eTraceDeadlineMiss`   | `DEADLINE MISS`    | HRT task active at its `ulEnd_time`                |
-| `eTraceSrtStart`       | `SRT START`        | New SRT task gets CPU for first time               |
-| `eTraceSrtPreempt`     | `SRT PREEMPT`      | SRT suspended for incoming HRT                     |
-| `eTraceSrtResume`      | `SRT RESUME`       | Previously preempted SRT resumes                   |
-| `eTraceSrtComplete`    | `SRT COMPLETE`     | SRT task reports completion                        |
-| `eTraceSrtTerminated`  | `SRT KILLED`       | SRT task reset at frame boundary                   |
-| `eTraceMajorFrame`     | `MAJOR FRAME`      | Frame boundary reached                             |
-| `eTraceIdleStats`      | `CPU STATS`        | Idle tick count for the frame                      |
-| `eTraceOverheadStats`  | `KERNEL OVERHEAD`  | Scheduler cycle cost for the frame                 |
-| `eTraceJitterViolation`| `JITTER VIOLATION` | Dispatch latency exceeded threshold                |
-
----
-The output is also redirected to a `uart.log` file with the followings commands for post-mortem
-analysis by the Python test suite.
-```
-qemu_start:
-mkdir -p $(LOG_DIR)
-qemu-system-arm \
--machine $(MACHINE) \
--cpu $(CPU) \
--kernel $(ELF) \
--monitor none \
--nographic \
--semihosting \
--serial stdio \  → redirects UART output to the console
--icount shift=6,align=off,sleep=on \
-| tee $(LOG_DIR)/uart.log  → duplicates console output to uart.log 
-```
-
-
-## Test Suite
-
-The test infrastructure is a Python 3 application centred on `integrated_test.py` and the `Tools/` package.
-
-### Module Responsibilities
-
-| Module             | Responsibility                                                                               |
-|--------------------|----------------------------------------------------------------------------------------------|
-| `build.py`         | Invokes `make` (via Docker or natively) and runs QEMU, capturing UART output to `uart.log`  |
-| `suite.py`         | Discovers `*.json` files in the suite directory, parses `TestMeta`, reads timing config      |
-| `log_parser.py`    | Reads `uart.log` line by line, extracts `TestMetrics` (frame count, miss count, jitter, etc.)|
-| `checks.py`        | Evaluates a list of `CheckResult` entries (pass/fail) against `TestMeta` + `TestMetrics`    |
-| `metrics_view.py`  | Pretty-prints `TestMetrics` to the console                                                   |
-| `reporting.py`     | Serialises `TestResult` objects to JSON files; builds suite summary                         |
-| `visualization.py` | Generates timeline and jitter charts using `matplotlib` (optional dependency)                |
-| `models.py`        | Pure data classes: `TestMeta`, `TestMetrics`, `TestResult`, `CheckResult`                    |
-| `ui.py`            | Console helpers: `banner()`, `header()`, `section()`, `ok()`, `fail()`, `info()`, `pause()` |
-
-### CLI Reference
-
-```bash
-# Run the full suite (interactive, via Docker)
-python3 integrated_test.py
-
-# Run the full suite in CI mode on native Linux
-python3 integrated_test.py --linux --no-pause
-
-# Run a single test by its JSON id field
-python3 integrated_test.py --config baseline
-
-# Analyze an existing uart.log without building or running
-python3 integrated_test.py --action analyze
-
-# Build only (no QEMU, no analysis)
-python3 integrated_test.py --action build
-
-# Run QEMU only (firmware must already be built)
-python3 integrated_test.py --action test
-
-# Clean build artefacts
-python3 integrated_test.py --action clean
-
-# List all available test configurations
-python3 integrated_test.py --list
-
-# Skip clean step between tests
-python3 integrated_test.py --no-clean
-
-# Disable chart generation (e.g. on headless CI)
-python3 integrated_test.py --no-charts
-
-# Disable report file saving
-python3 integrated_test.py --no-save-report
-
-# Point to a custom suite directory
-python3 integrated_test.py --suite-dir /path/to/my/suite
-```
-
-### Test Configuration JSON Schema
-
-```json
-{
-  "id": "baseline",
-  "name": "Baseline Schedule",
-  "description": "Default task set — zero deadline misses expected.",
-  "major_frame_ms": 100,
-  "minor_frame_ms": 10
-}
-```
-
-The `id` field is used for `--config` selection and for naming report files.
-
-### Execution Flow per Test
-
-```
-IntegratedTestRunner.run_single(config_path)
-    │
-    ├─ 1. clean()          →  make clean
-    ├─ 2. build(config)    →  make (injects task config)
-    ├─ 3. run_qemu()       →  qemu-system-arm → logs/uart.log
-    ├─ 4. analyze(meta)
-    │       ├─ log_parser.parse_log()    → TestMetrics
-    │       ├─ metrics_view.print()      → console output
-    │       ├─ checks.run_checks()       → [CheckResult, ...]
-    │       └─ visualization.generate() → charts/ (if enabled)
-    └─ 5. reporting.save_result()        → test_reports/<ts>/
-```
-
-### Report Layout
-
-```
-test_reports/
-└── 20240315_143022/
-    ├── baseline.json
-    ├── deadline_stress.json
-    ├── suite_summary.json
-    └── charts/
-        ├── 20240315_143022_Baseline Schedule_timeline.png
-        └── 20240315_143022_Baseline Schedule_jitter.png
-```
-
----
-
-## Build & Run
-
-### Prerequisites
-
-**ARM cross-compiler:**
-```bash
-sudo apt install gcc-arm-none-eabi
-```
-
-**QEMU with ARM system emulation:**
-```bash
-sudo apt install qemu-system-arm
-```
-
-**Python 3.9+ (charts are optional):**
-```bash
-pip install matplotlib numpy
-```
-
-Alternatively, use the **Docker path** (default when `--linux` is not passed). `Tools/build.py` manages a container with all dependencies pre-installed — no local toolchain required.
-
-### Manual Build
-
-```bash
-cd Demo
-make clean
+git
+python3
 make
-```
+gcc-arm-none-eabi
+qemu-system-arm
 
-### Manual QEMU Execution
+Build
 
-```bash
-qemu-system-arm \
-  -machine mps2-an385 \
-  -cpu cortex-m3 \
-  -kernel build/RTOSDemo.axf \
-  -nographic \
-  -serial file:../logs/uart.log \
-  -semihosting-config enable=on,target=native
-```
+From the project:
 
-### Automated via Test Runner
+cd Demo
+make all
 
-```bash
-# Full suite, native Linux, CI mode
-python3 integrated_test.py --linux --no-pause
+Run in QEMU
 
-# Single scenario
-python3 integrated_test.py --linux --no-pause --config baseline
-```
+make qemu_start
 
----
+The UART output can then be observed to verify:
 
-## Configuration Reference
+major frames
 
-### `TimelineConfig_t`
+HRT/SRT execution
 
-```c
-typedef struct {
-    uint32_t              ulMajorFrameTicks;  // Total ticks per cycle
-    uint32_t              ulSubFrameTicks;    // Ticks per sub-frame
-    uint32_t              ulNumTasks;         // Total task count
-    TimelineTaskConfig_t *pxTasks;            // Pointer to task array
-} TimelineConfig_t;
-```
+sensor values
 
-### Key FreeRTOS `FreeRTOSConfig.h` Parameters
+queue transfer
 
-| Parameter                          | Typical Value | Notes                                                  |
-|------------------------------------|---------------|--------------------------------------------------------|
-| `configTICK_RATE_HZ`               | 1 000         | 1 ms per tick                                          |
-| `configCPU_CLOCK_HZ`               | 25 000 000    | 25 MHz (QEMU MPS2+ AN385)                              |
-| `configSUPPORT_STATIC_ALLOCATION`  | 1             | **Required** — no dynamic heap used                    |
-| `configUSE_TICK_HOOK`              | 1             | Required for `xTimelineTickHook()`                     |
-| `configMAX_PRIORITIES`             | 8             | Trace Dumper runs at `configMAX_PRIORITIES - 1`        |
-| `configMINIMAL_STACK_SIZE`         | 128           | Stack size in words for the Idle task                  |
+processing results
 
----
+deadline monitoring
 
-## Known Limitations & Design Decisions
+scheduler overhead
 
-**Static allocation only.** All tasks, stacks, and TCBs are statically allocated. This is intentional: it eliminates heap fragmentation, bounds initialization time, and makes worst-case memory usage statically provable. `vApplicationGetIdleTaskMemory()` is implemented accordingly.
+Generate workload configuration
 
-**Trace buffer overflow is silent.** The 8 192-entry ring buffer discards new events when full rather than blocking. This preserves HRT timing guarantees at the cost of potential telemetry loss under very high event rates (many short tasks, high tick rate).
+The task configuration is generated from the test suite:
 
-**Jitter measurement via SysTick counter.** The ARM SysTick counter at `0xE000E018` counts down from `CYCLES_PER_TICK - 1` to 0 each tick. The delta calculation handles counter wrap-around explicitly:
+python3 Tools/workload_gen.py --input suite/00_test.json
 
-```c
-if (ulEnd <= ulStart)
-    ulDelta = ulStart - ulEnd;
-else
-    ulDelta = ulStart + (CYCLES_PER_TICK - 1 - ulEnd) + 1;
-```
+Testing and Deliverables
 
-**Custom kernel extensions required.** The project relies on non-standard FreeRTOS functions: `xTaskIsSuspendedFromISR()`, `vTaskTimelineSuspend()`, `vTaskTimelineSuspendFromISR()`, `vTaskTimelineResume()`, `vTaskTimelineResumeFromISR()`, and `vTaskTimelineReset()`. These must be patched into the FreeRTOS kernel sources before building.
+This repository contains the complete project deliverables used during development and validation.
 
-**SRT FIFO via list pointer rewind.** The SRT queue reuses the FreeRTOS `List_t` structure. At each frame reset, instead of destroying and rebuilding the list, the internal `pxIndex` pointer is simply rewound to the list's anchor element — O(1) reset at the cost of tight coupling to FreeRTOS list internals.
+Source Code
 
-**`vTaskTimelineReset()` semantics.** This custom function reinitialises a task's stack frame and resets its program counter to the task function entry point, providing true cyclic reset semantics without tearing down and recreating the task (which would require dynamic allocation and re-registration with the scheduler).
+The Demo/ directory contains:
 
----
+scheduler integration
 
-## License
+sensor simulation
 
-Based on the **FreeRTOS Kernel**, licensed under the **MIT License**.  
-Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+queue communication
 
-See individual source files for the full license text and copyright notices.
+processing tasks
+
+generated workloads
+
+UART telemetry
+
+tracing
+
+startup/fault diagnostics
+
+build configuration
+
+Test Reports
+
+test_reports/ contains generated testing/reporting material associated with scheduler validation.
+
+Project Report
+
+project_1.pdf
+
+Contains the project documentation/report submitted for the project work.
+
+Project Presentation
+
+project_1_presentation.pdf
+
+Contains the presentation used to explain the system, architecture, implementation, results, and observations.
+
+Testing Documentation
+
+TEST_README.md
+
+Contains testing-related instructions and validation information.
+
+Technologies Used
+
+Category
+
+Technology
+
+Language
+
+C
+
+RTOS
+
+FreeRTOS
+
+Target
+
+ARM Cortex-M3
+
+Emulator
+
+QEMU
+
+Toolchain
+
+GNU ARM Embedded GCC
+
+Build
+
+GNU Make
+
+Scripting
+
+Python
+
+Development Environment
+
+WSL2 / Ubuntu
+
+Output / Debugging
+
+UART, tracing, ARM register diagnostics
+
+Engineering Concepts Demonstrated
+
+This project provides hands-on implementation of:
+
+Embedded C
+
+modular driver-style code
+
+typed sensor data structures
+
+static memory
+
+embedded-friendly integer representations
+
+RTOS
+
+task creation
+
+task scheduling
+
+HRT/SRT execution
+
+task suspension/resumption
+
+queues
+
+task synchronization
+
+Real-Time Systems
+
+major-frame scheduling
+
+deterministic task windows
+
+deadline monitoring
+
+scheduler overhead measurement
+
+runtime telemetry
+
+Embedded Debugging
+
+HardFault analysis
+
+program-counter mapping
+
+stack-pointer inspection
+
+context-switch debugging
+
+QEMU-based reproduction
+
+System Integration
+
+generated task configuration
+
+scheduler + application integration
+
+automated build/run workflow
+
+repeatable emulated validation
+
+Example Runtime Output
+
+MAJOR FRAME
+
+SENSOR: t=304 temp=30.0C status=OK
+PROCESSOR: t=304 temp=30.0C
+
+SRT ST1
+SRT ST2
+SRT ST3
+
+HRT HT1
+HRT HT2
+HRT HT3
+
+SENSOR STATS: samples=310 processed=310 drops=0 high_temp=0
+
+The scheduler also reports deadline-monitoring events when execution crosses a configured deadline.
+
+Results Summary
+
+Metric
+
+Observed Result
+
+Sensor samples
+
+310
+
+Processed samples
+
+310
+
+Queue drops
+
+0
+
+High-temperature events
+
+0
+
+Scheduler overhead
+
+~1.18%
+
+Major-frame execution
+
+Stable across long QEMU runs
+
+HardFault in stable validation run
+
+Not observed
+
+Deadline monitoring
+
+Enabled; occasional HT3 misses observed
+
+These numbers describe the observed demonstration run and are not presented as a universal benchmark for all hardware/configurations.
+
+Future Extensions
+
+Possible next steps include:
+
+replacing the simulated sensor with real hardware
+
+adding ADC/I2C/SPI sensor acquisition
+
+adding interrupt-driven data capture
+
+extending sensor processing with filtering
+
+adding more realistic workload models
+
+adding automated deadline statistics
+
+adding CI-based build and regression tests
+
+validating on a physical Cortex-M development board
+
+Author
+
+Ankit Kumar
+
+B.Tech, Electronics & Communication Engineering
+IIT Patna
+
+Acknowledgement
+
+This project builds upon the open-source EOSproject time-triggered FreeRTOS scheduling framework by Marco Pedron.
+
+Upstream repository:
+
+https://github.com/marco-pedron/EOSproject
+
+The upstream framework is retained as the scheduler foundation, while this repository adds the project-specific embedded sensor pipeline, queue communication, telemetry, integration, validation, and debugging work.
+
+License
+
+Please refer to the original project's license and the license files included in this repository. Upstream attribution should be preserved when redistributing or modifying the scheduler framework.
