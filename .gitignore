@@ -1,0 +1,7 @@
+Demo/Output/
+Demo/logs/
+Demo/*.elf
+Demo/*.map
+Demo/*.o
+__pycache__/
+*.pyc

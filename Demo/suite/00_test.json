@@ -1,0 +1,68 @@
+{
+  "_test_meta": {
+    "name": "Baseline - light load",
+    "id": "refactored_baseline",
+    "description": "Baseline test with light load. This test is used to verify that the system is working correctly and to provide a baseline for future tests.",
+    "expect_deadline_misses": 1,
+    "expect_hrt_activations_per_frame": 3,
+    "expect_srt_preemptions_min": 1
+  },
+  "major_frame": 200,
+  "subframe": 20,
+  "tasks": [
+    {
+      "name": "HT1",
+      "type": "HRT",
+      "start": 12,
+      "end": 17,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 5000
+    },
+    {
+      "name": "HT2",
+      "type": "HRT",
+      "start":23,
+      "end": 30,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 800
+    },
+    {
+      "name": "HT3",
+      "type": "HRT",
+      "start": 37,
+      "end": 40,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 6000
+    },
+    {
+      "name": "ST1",
+      "type": "SRT",
+      "start": 0,
+      "end": 0,
+      "stack": 512,
+      "function": "vSensorTask",
+      "workload_factor": 8000
+    },
+    {
+      "name": "ST2",
+      "type": "SRT",
+      "start": 0,
+      "end": 0,
+      "stack": 512,
+      "function": "vSensorProcessingTask",
+      "workload_factor": 16900
+    },
+    {
+      "name": "ST3",
+      "type": "SRT",
+      "start": 0,
+      "end": 0,
+      "stack": 512,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 16900
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+==================================================================
+  TEST : Baseline - light load
+  ID   : refactored_baseline
+  TIME : 2026-09-27 07:15:18
+  DESC : Baseline test with light load. This test is used to verify that the system is working correctly and to provide a baseline for future tests.
+==================================================================
+
+  --- Metrics ---
+
+    Metric                    Count
+    ───────────────────────────────
+    HRT Task Starts            1314
+    HRT Task Completions        876
+    Deadline Misses             438
+    SRT Task Starts            1314
+    SRT Task Completions        949
+    SRT Preemptions            1314
+    SRT Killed                  365
+    Major Frame Completions     438
+    ───────────────────────────────
+
+    Measure                   Samples      Avg     Std     Min     Max
+    ──────────────────────────────────────────────────────────────────
+    Idle Ticks                    438      7.8    17.1       0      46
+    Kernel Overhead (cycles)      438  50581.0   428.9   50351   51541
+    Kernel Overhead (%)           438    1.00%   0.01%   1.00%   1.03%
+    Delay Max (cycles)           1314    230.3     0.5     230     231
+    Delay Min (cycles)           1314    230.3     0.5     230     231
+    ──────────────────────────────────────────────────────────────────
+
+  --- Jitter Analysis ---
+
+    Task    Samples  Avg Jitter  Max Jitter  Min Jitter
+    ───────────────────────────────────────────────────
+    HT1         438         0.0           0           0
+    HT2         438         0.0           0           0
+    HT3         438         0.0           0           0
+    ───────────────────────────────────────────────────
+                   Samples     Avg     Max     Min
+    ──────────────────────────────────────────────
+    Global Jitter     1314     0.0       0       0
+    ──────────────────────────────────────────────
+
+  ────────────────────────────────────────────
+  Checks:
+    [PASS]  Deadline miss detected (expected ≥1)  (found 438)
+    [PASS]  HRT activations/frame ≈ 3  (3.0/frame  (438 frames observed))
+    [PASS]  SRT preemptions ≥ 1  (found 1314)
+    [PASS]  Simulation started  (START SIMULATION present)
+
+  Overall:  PASSED
+

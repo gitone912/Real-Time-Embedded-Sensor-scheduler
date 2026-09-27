@@ -1,0 +1,78 @@
+{
+  "_test_meta": {
+    "name": "Tight spacing - mixed HRT/SRT",
+    "id": "tight_spacing_mix",
+    "description": "Test with HRT and SRT tasks scheduled very close together to stress scheduling and preemption handling. Tasks overlap and compete for CPU time.",
+    "expect_deadline_misses": 0,
+    "expect_hrt_activations_per_frame": 5,
+    "expect_srt_preemptions_min": 3
+  },
+  "major_frame": 100,
+  "subframe": 10,
+  "tasks": [
+    {
+      "name": "HT1",
+      "type": "HRT",
+      "start": 5,
+      "end": 10,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 5000
+    },
+    {
+      "name": "HT2",
+      "type": "HRT",
+      "start": 10,
+      "end": 12,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 300
+    },
+    {
+      "name": "HT3",
+      "type": "HRT",
+      "start": 13,
+      "end": 20,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 3000
+    },
+    {
+      "name": "HT4",
+      "type": "HRT",
+      "start": 35,
+      "end": 38,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 2200
+    },
+    {
+      "name": "HT5",
+      "type": "HRT",
+      "start": 65,
+      "end": 68,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 2100
+    },
+    {
+      "name": "ST1",
+      "type": "SRT",
+      "start": 0,
+      "end": 0,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 5000
+    },
+    {
+      "name": "ST2",
+      "type": "SRT",
+      "start": 0,
+      "end": 0,
+      "stack": 128,
+      "function": "vGenericTaskWrapper",
+      "workload_factor": 7000
+    }
+  ]
+}
+

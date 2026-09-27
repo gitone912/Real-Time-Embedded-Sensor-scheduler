@@ -1,0 +1,149 @@
+==================================================================
+  TEST : Baseline - light load
+  ID   : refactored_baseline
+  TIME : 2026-09-27 06:47:30
+  DESC : Baseline test with light load. This test is used to verify that the system is working correctly and to provide a baseline for future tests.
+==================================================================
+
+  --- Metrics ---
+
+    Metric                    Count
+    ───────────────────────────────
+    HRT Task Starts               1
+    HRT Task Completions          1
+    Deadline Misses               0
+    SRT Task Starts               1
+    SRT Task Completions          0
+    SRT Preemptions               1
+    SRT Killed                    0
+    Major Frame Completions       1
+    ───────────────────────────────
+
+    Measure                   Samples     Avg     Std     Min     Max
+    ─────────────────────────────────────────────────────────────────
+    Idle Ticks                      0       -       -       -       -
+    Kernel Overhead (cycles)        0       -       -       -       -
+    Kernel Overhead (%)             0       -       -       -       -
+    Delay Max (cycles)              1   230.0     0.0     230     230
+    Delay Min (cycles)              1   230.0     0.0     230     230
+    ─────────────────────────────────────────────────────────────────
+
+  --- Jitter Analysis ---
+
+    Task    Samples  Avg Jitter  Max Jitter  Min Jitter
+    ───────────────────────────────────────────────────
+    HT1           1         0.0           0           0
+    ───────────────────────────────────────────────────
+                   Samples     Avg     Max     Min
+    ──────────────────────────────────────────────
+    Global Jitter        1     0.0       0       0
+    ──────────────────────────────────────────────
+
+  ────────────────────────────────────────────
+  Checks:
+    [FAIL]  Deadline miss detected (expected ≥1)  (found 0)
+    [FAIL]  HRT activations/frame ≈ 3  (1.0/frame  (1 frames observed))
+    [PASS]  SRT preemptions ≥ 1  (found 1)
+    [PASS]  Simulation started  (START SIMULATION present)
+
+  Overall:  FAILED
+
+==================================================================
+  TEST : Big One 
+  ID   : big_one
+  TIME : 2026-09-27 06:47:36
+  DESC : Heavy load test with 50 HRT tasks and 20 SRT tasks. 
+==================================================================
+
+  --- Metrics ---
+
+    Metric                    Count
+    ───────────────────────────────
+    HRT Task Starts             200
+    HRT Task Completions        172
+    Deadline Misses              28
+    SRT Task Starts              80
+    SRT Task Completions         76
+    SRT Preemptions             196
+    SRT Killed                    4
+    Major Frame Completions       4
+    ───────────────────────────────
+
+    Measure                   Samples      Avg     Std     Min     Max
+    ──────────────────────────────────────────────────────────────────
+    Idle Ticks                      4      0.0     0.0       0       0
+    Kernel Overhead (cycles)        4  87633.2    10.0   87616   87639
+    Kernel Overhead (%)             4    3.50%   0.00%   3.50%   3.50%
+    Delay Max (cycles)            200    232.8    13.3     230     326
+    Delay Min (cycles)            200    230.5     6.8     230     326
+    ──────────────────────────────────────────────────────────────────
+
+  --- Jitter Analysis ---
+
+    Task    Samples  Avg Jitter  Max Jitter  Min Jitter
+    ───────────────────────────────────────────────────
+    HT01          4        71.8          96           0
+    HT02          4         0.8           1           0
+    HT03          4         0.8           1           0
+    HT04          4         0.8           1           0
+    HT05          4         0.8           1           0
+    HT06          4         0.8           1           0
+    HT07          4         0.8           1           0
+    HT08          4         0.8           1           0
+    HT09          4         0.8           1           0
+    HT10          4         0.8           1           0
+    HT11          4         0.8           1           0
+    HT12          4         0.8           1           0
+    HT13          4         0.8           1           0
+    HT14          4         0.8           1           0
+    HT15          4         0.8           1           0
+    HT16          4         0.8           1           0
+    HT17          4         0.8           1           0
+    HT18          4         0.8           1           0
+    HT19          4         0.8           1           0
+    HT20          4         0.8           1           0
+    HT21          4         1.0           1           1
+    HT22          4         1.0           1           1
+    HT23          4         1.0           1           1
+    HT24          4         1.0           1           1
+    HT25          4         1.0           1           1
+    HT26          4         1.0           1           1
+    HT27          4         1.0           1           1
+    HT28          4         1.0           1           1
+    HT29          4         1.0           1           1
+    HT30          4         1.0           1           1
+    HT31          4         1.0           1           1
+    HT32          4         1.0           1           1
+    HT33          4         1.0           1           1
+    HT34          4         1.0           1           1
+    HT35          4         1.0           1           1
+    HT36          4         1.0           1           1
+    HT37          4         1.0           1           1
+    HT38          4         1.0           1           1
+    HT39          4         1.0           1           1
+    HT40          4         1.0           1           1
+    HT41          4         1.0           1           1
+    HT42          4         1.0           1           1
+    HT43          4         1.0           1           1
+    HT44          4         1.0           1           1
+    HT45          4         1.0           1           1
+    HT46          4         1.0           1           1
+    HT47          4         1.0           1           1
+    HT48          4         1.0           1           1
+    HT49          4         1.0           1           1
+    HT50          4         1.0           1           1
+    ───────────────────────────────────────────────────
+                   Samples     Avg     Max     Min
+    ──────────────────────────────────────────────
+    Global Jitter      200     2.3      96       0
+    ──────────────────────────────────────────────
+
+  ────────────────────────────────────────────
+  Checks:
+    [PASS]  Deadline miss detected (expected ≥1)  (found 28)
+    [PASS]  HRT activations/frame ≈ 50  (50.0/frame  (4 frames observed))
+    [PASS]  SRT preemptions ≥ 1  (found 196)
+    [PASS]  Simulation started  (START SIMULATION present)
+
+  Overall:  PASSED
+

@@ -1,0 +1,313 @@
+
+--- DEBUG: Sorted Task Array ---
+[ 0 ] Name: HT01 	Type: HRT 	Start: 0
+[ 1 ] Name: HT02 	Type: HRT 	Start: 2
+[ 2 ] Name: HT03 	Type: HRT 	Start: 4
+[ 3 ] Name: HT04 	Type: HRT 	Start: 6
+[ 4 ] Name: HT05 	Type: HRT 	Start: 8
+[ 5 ] Name: HT06 	Type: HRT 	Start: 10
+[ 6 ] Name: HT07 	Type: HRT 	Start: 12
+[ 7 ] Name: HT08 	Type: HRT 	Start: 14
+[ 8 ] Name: HT09 	Type: HRT 	Start: 16
+[ 9 ] Name: HT10 	Type: HRT 	Start: 18
+[ 10 ] Name: HT11 	Type: HRT 	Start: 20
+[ 11 ] Name: HT12 	Type: HRT 	Start: 22
+[ 12 ] Name: HT13 	Type: HRT 	Start: 24
+[ 13 ] Name: HT14 	Type: HRT 	Start: 26
+[ 14 ] Name: HT15 	Type: HRT 	Start: 28
+[ 15 ] Name: HT16 	Type: HRT 	Start: 30
+[ 16 ] Name: HT17 	Type: HRT 	Start: 32
+[ 17 ] Name: HT18 	Type: HRT 	Start: 34
+[ 18 ] Name: HT19 	Type: HRT 	Start: 36
+[ 19 ] Name: HT20 	Type: HRT 	Start: 38
+[ 20 ] Name: HT21 	Type: HRT 	Start: 40
+[ 21 ] Name: HT22 	Type: HRT 	Start: 42
+[ 22 ] Name: HT23 	Type: HRT 	Start: 44
+[ 23 ] Name: HT24 	Type: HRT 	Start: 46
+[ 24 ] Name: HT25 	Type: HRT 	Start: 48
+[ 25 ] Name: HT26 	Type: HRT 	Start: 50
+[ 26 ] Name: HT27 	Type: HRT 	Start: 52
+[ 27 ] Name: HT28 	Type: HRT 	Start: 54
+[ 28 ] Name: HT29 	Type: HRT 	Start: 56
+[ 29 ] Name: HT30 	Type: HRT 	Start: 58
+[ 30 ] Name: HT31 	Type: HRT 	Start: 60
+[ 31 ] Name: HT32 	Type: HRT 	Start: 62
+[ 32 ] Name: HT33 	Type: HRT 	Start: 64
+[ 33 ] Name: HT34 	Type: HRT 	Start: 66
+[ 34 ] Name: HT35 	Type: HRT 	Start: 68
+[ 35 ] Name: HT36 	Type: HRT 	Start: 70
+[ 36 ] Name: HT37 	Type: HRT 	Start: 72
+[ 37 ] Name: HT38 	Type: HRT 	Start: 74
+[ 38 ] Name: HT39 	Type: HRT 	Start: 76
+[ 39 ] Name: HT40 	Type: HRT 	Start: 78
+[ 40 ] Name: HT41 	Type: HRT 	Start: 80
+[ 41 ] Name: HT42 	Type: HRT 	Start: 82
+[ 42 ] Name: HT43 	Type: HRT 	Start: 84
+[ 43 ] Name: HT44 	Type: HRT 	Start: 86
+[ 44 ] Name: HT45 	Type: HRT 	Start: 88
+[ 45 ] Name: HT46 	Type: HRT 	Start: 90
+[ 46 ] Name: HT47 	Type: HRT 	Start: 92
+[ 47 ] Name: HT48 	Type: HRT 	Start: 94
+[ 48 ] Name: HT49 	Type: HRT 	Start: 96
+[ 49 ] Name: HT50 	Type: HRT 	Start: 98
+[ 50 ] Name: ST01 	Type: SRT 	Start: 0
+[ 51 ] Name: ST02 	Type: SRT 	Start: 0
+[ 52 ] Name: ST03 	Type: SRT 	Start: 0
+[ 53 ] Name: ST04 	Type: SRT 	Start: 0
+[ 54 ] Name: ST05 	Type: SRT 	Start: 0
+[ 55 ] Name: ST06 	Type: SRT 	Start: 0
+[ 56 ] Name: ST07 	Type: SRT 	Start: 0
+[ 57 ] Name: ST08 	Type: SRT 	Start: 0
+[ 58 ] Name: ST09 	Type: SRT 	Start: 0
+[ 59 ] Name: ST10 	Type: SRT 	Start: 0
+[ 60 ] Name: ST11 	Type: SRT 	Start: 0
+[ 61 ] Name: ST12 	Type: SRT 	Start: 0
+[ 62 ] Name: ST13 	Type: SRT 	Start: 0
+[ 63 ] Name: ST14 	Type: SRT 	Start: 0
+[ 64 ] Name: ST15 	Type: SRT 	Start: 0
+[ 65 ] Name: ST16 	Type: SRT 	Start: 0
+[ 66 ] Name: ST17 	Type: SRT 	Start: 0
+[ 67 ] Name: ST18 	Type: SRT 	Start: 0
+[ 68 ] Name: ST19 	Type: SRT 	Start: 0
+[ 69 ] Name: ST20 	Type: SRT 	Start: 0
+--------------------------------
+
+
+Configured sub-frames:
+ulNumTasks	pxTasks		subFrameTicks	majorFrameTicks
+70		0x2000005Task: HT01	->	sub-frame: 0
+Task: HT02	->	sub-frame: 0
+Task: HT03	->	sub-frame: 0
+Task: HT04	->	sub-frame: 0
+Task: HT05	->	sub-frame: 0
+Task: HT06	->	sub-frame: 1
+Task: HT07	->	sub-frame: 1
+Task: HT08	->	sub-frame: 1
+Task: HT09	->	sub-frame: 1
+Task: HT10	->	sub-frame: 1
+Task: HT11	->	sub-frame: 2
+Task: HT12	->	sub-frame: 2
+Task: HT13	->	sub-frame: 2
+Task: HT14	->	sub-frame: 2
+Task: HT15	->	sub-frame: 2
+Task: HT16	->	sub-frame: 3
+Task: HT17	->	sub-frame: 3
+Task: HT18	->	sub-frame: 3
+Task: HT19	->	sub-frame: 3
+Task: HT20	->	sub-frame: 3
+Task: HT21	->	sub-frame: 4
+Task: HT22	->	sub-frame: 4
+Task: HT23	->	sub-frame: 4
+Task: HT24	->	sub-frame: 4
+Task: HT25	->	sub-frame: 4
+Task: HT26	->	sub-frame: 5
+Task: HT27	->	sub-frame: 5
+Task: HT28	->	sub-frame: 5
+Task: HT29	->	sub-frame: 5
+Task: HT30	->	sub-frame: 5
+Task: HT31	->	sub-frame: 6
+Task: HT32	->	sub-frame: 6
+Task: HT33	->	sub-frame: 6
+Task: HT34	->	sub-frame: 6
+Task: HT35	->	sub-frame: 6
+Task: HT36	->	sub-frame: 7
+Task: HT37	->	sub-frame: 7
+Task: HT38	->	sub-frame: 7
+Task: HT39	->	sub-frame: 7
+Task: HT40	->	sub-frame: 7
+Task: HT41	->	sub-frame: 8
+Task: HT42	->	sub-frame: 8
+Task: HT43	->	sub-frame: 8
+Task: HT44	->	sub-frame: 8
+Task: HT45	->	sub-frame: 8
+Task: HT46	->	sub-frame: 9
+Task: HT47	->	sub-frame: 9
+Task: HT48	->	sub-frame: 9
+Task: HT49	->	sub-frame: 9
+Task: HT50	->	sub-frame: 9
+Task: ST01	->	sub-frame: 0
+Task: ST02	->	sub-frame: 0
+Task: ST03	->	sub-frame: 0
+Task: ST04	->	sub-frame: 0
+Task: ST05	->	sub-frame: 0
+Task: ST06	->	sub-frame: 0
+Task: ST07	->	sub-frame: 0
+Task: ST08	->	sub-frame: 0
+Task: ST09	->	sub-frame: 0
+Task: ST10	->	sub-frame: 0
+Task: ST11	->	sub-frame: 0
+Task: ST12	->	sub-frame: 0
+Task: ST13	->	sub-frame: 0
+Task: ST14	->	sub-frame: 0
+Task: ST15	->	sub-frame: 0
+Task: ST16	->	sub-frame: 0
+Task: ST17	->	sub-frame: 0
+Task: ST18	->	sub-frame: 0
+Task: ST19	->	sub-frame: 0
+Task: ST20	->	sub-frame: 0
+
+
+START SIMULATION
+
+DUMPER: Scheduler Started & Dumper Alive!
+[ 00000	00000 ] HRT START:	HT01 ( SubFrame: 0 )	Deadline @00001	 delay max:326 cycles 	 delay min: 326 cycles
+[ 00001	00001 ] DEADLINE MISS!	HT01
+[ 00001	00001 ] SRT START:	ST01 ( SubFrame: 0 )
+[ 00002	00002 ] SRT COMPLETE:	ST01 ( SubFrame: 0 )
+[ 00002	00002 ] SRT START:	ST02 ( SubFrame: 0 )
+[ 00002	00002 ] SRT COMPLETE:	ST02 ( SubFrame: 0 )
+[ 00002	00002 ] SRT START:	ST03 ( SubFrame: 0 )
+[ 00002	00002 ] SRT PREEMPT:	ST03 ( SubFrame: 0 )
+[ 00002	00002 ] HRT START:	HT02 ( SubFrame: 0 )	Deadline @00003	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00003	00003 ] DEADLINE MISS!	HT02
+[ 00003	00003 ] SRT RESUME:	ST03 ( SubFrame: 0 )
+[ 00004	00004 ] SRT PREEMPT:	ST03 ( SubFrame: 0 )
+[ 00004	00004 ] HRT START:	HT03 ( SubFrame: 0 )	Deadline @00005	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00005	00005 ] HRT COMPLETE:	HT03 ( SubFrame: 0 )
+[ 00005	00005 ] SRT RESUME:	ST03 ( SubFrame: 0 )
+[ 00006	00006 ] SRT COMPLETE:	ST03 ( SubFrame: 0 )
+[ 00006	00006 ] SRT START:	ST04 ( SubFrame: 0 )
+[ 00006	00006 ] SRT COMPLETE:	ST04 ( SubFrame: 0 )
+[ 00006	00006 ] SRT START:	ST05 ( SubFrame: 0 )
+[ 00006	00006 ] SRT COMPLETE:	ST05 ( SubFrame: 0 )
+[ 00006	00006 ] SRT START:	ST06 ( SubFrame: 0 )
+[ 00006	00006 ] SRT PREEMPT:	ST06 ( SubFrame: 0 )
+[ 00006	00006 ] HRT START:	HT04 ( SubFrame: 0 )	Deadline @00007	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00007	00007 ] HRT COMPLETE:	HT04 ( SubFrame: 0 )
+[ 00007	00007 ] SRT RESUME:	ST06 ( SubFrame: 0 )
+[ 00007	00007 ] SRT COMPLETE:	ST06 ( SubFrame: 0 )
+[ 00007	00007 ] SRT START:	ST07 ( SubFrame: 0 )
+[ 00008	00008 ] SRT PREEMPT:	ST07 ( SubFrame: 0 )
+[ 00008	00008 ] HRT START:	HT05 ( SubFrame: 0 )	Deadline @00009	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00009	00009 ] HRT COMPLETE:	HT05 ( SubFrame: 0 )
+[ 00009	00009 ] SRT RESUME:	ST07 ( SubFrame: 0 )
+[ 00009	00009 ] SRT COMPLETE:	ST07 ( SubFrame: 0 )
+[ 00009	00009 ] SRT START:	ST08 ( SubFrame: 0 )
+[ 00010	00010 ] SRT COMPLETE:	ST08 ( SubFrame: 1 )
+[ 00010	00010 ] SRT START:	ST09 ( SubFrame: 1 )
+[ 00010	00010 ] SRT PREEMPT:	ST09 ( SubFrame: 1 )
+[ 00010	00010 ] HRT START:	HT06 ( SubFrame: 1 )	Deadline @00011	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00011	00011 ] DEADLINE MISS!	HT06
+[ 00011	00011 ] SRT RESUME:	ST09 ( SubFrame: 1 )
+[ 00012	00012 ] SRT PREEMPT:	ST09 ( SubFrame: 1 )
+[ 00012	00012 ] HRT START:	HT07 ( SubFrame: 1 )	Deadline @00013	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00013	00013 ] HRT COMPLETE:	HT07 ( SubFrame: 1 )
+[ 00013	00013 ] SRT RESUME:	ST09 ( SubFrame: 1 )
+[ 00014	00014 ] SRT PREEMPT:	ST09 ( SubFrame: 1 )
+[ 00014	00014 ] HRT START:	HT08 ( SubFrame: 1 )	Deadline @00015	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00015	00015 ] DEADLINE MISS!	HT08
+[ 00015	00015 ] SRT RESUME:	ST09 ( SubFrame: 1 )
+[ 00016	00016 ] SRT PREEMPT:	ST09 ( SubFrame: 1 )
+[ 00016	00016 ] HRT START:	HT09 ( SubFrame: 1 )	Deadline @00017	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00017	00017 ] HRT COMPLETE:	HT09 ( SubFrame: 1 )
+[ 00017	00017 ] SRT RESUME:	ST09 ( SubFrame: 1 )
+[ 00018	00018 ] SRT PREEMPT:	ST09 ( SubFrame: 1 )
+[ 00018	00018 ] HRT START:	HT10 ( SubFrame: 1 )	Deadline @00019	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00019	00019 ] HRT COMPLETE:	HT10 ( SubFrame: 1 )
+[ 00019	00019 ] SRT RESUME:	ST09 ( SubFrame: 1 )
+[ 00020	00020 ] SRT PREEMPT:	ST09 ( SubFrame: 2 )
+[ 00020	00020 ] HRT START:	HT11 ( SubFrame: 2 )	Deadline @00021	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00021	00021 ] HRT COMPLETE:	HT11 ( SubFrame: 2 )
+[ 00021	00021 ] SRT RESUME:	ST09 ( SubFrame: 2 )
+[ 00022	00022 ] SRT PREEMPT:	ST09 ( SubFrame: 2 )
+[ 00022	00022 ] HRT START:	HT12 ( SubFrame: 2 )	Deadline @00023	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00023	00023 ] HRT COMPLETE:	HT12 ( SubFrame: 2 )
+[ 00023	00023 ] SRT RESUME:	ST09 ( SubFrame: 2 )
+[ 00024	00024 ] SRT PREEMPT:	ST09 ( SubFrame: 2 )
+[ 00024	00024 ] HRT START:	HT13 ( SubFrame: 2 )	Deadline @00025	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00025	00025 ] HRT COMPLETE:	HT13 ( SubFrame: 2 )
+[ 00025	00025 ] SRT RESUME:	ST09 ( SubFrame: 2 )
+[ 00026	00026 ] SRT PREEMPT:	ST09 ( SubFrame: 2 )
+[ 00026	00026 ] HRT START:	HT14 ( SubFrame: 2 )	Deadline @00027	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00027	00027 ] HRT COMPLETE:	HT14 ( SubFrame: 2 )
+[ 00027	00027 ] SRT RESUME:	ST09 ( SubFrame: 2 )
+[ 00028	00028 ] SRT PREEMPT:	ST09 ( SubFrame: 2 )
+[ 00028	00028 ] HRT START:	HT15 ( SubFrame: 2 )	Deadline @00029	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00029	00029 ] HRT COMPLETE:	HT15 ( SubFrame: 2 )
+[ 00029	00029 ] SRT RESUME:	ST09 ( SubFrame: 2 )
+[ 00030	00030 ] SRT PREEMPT:	ST09 ( SubFrame: 3 )
+[ 00030	00030 ] HRT START:	HT16 ( SubFrame: 3 )	Deadline @00031	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00031	00031 ] HRT COMPLETE:	HT16 ( SubFrame: 3 )
+[ 00031	00031 ] SRT RESUME:	ST09 ( SubFrame: 3 )
+[ 00032	00032 ] SRT PREEMPT:	ST09 ( SubFrame: 3 )
+[ 00032	00032 ] HRT START:	HT17 ( SubFrame: 3 )	Deadline @00033	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00033	00033 ] HRT COMPLETE:	HT17 ( SubFrame: 3 )
+[ 00033	00033 ] SRT RESUME:	ST09 ( SubFrame: 3 )
+[ 00034	00034 ] SRT PREEMPT:	ST09 ( SubFrame: 3 )
+[ 00034	00034 ] HRT START:	HT18 ( SubFrame: 3 )	Deadline @00035	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00035	00035 ] HRT COMPLETE:	HT18 ( SubFrame: 3 )
+[ 00035	00035 ] SRT RESUME:	ST09 ( SubFrame: 3 )
+[ 00036	00036 ] SRT PREEMPT:	ST09 ( SubFrame: 3 )
+[ 00036	00036 ] HRT START:	HT19 ( SubFrame: 3 )	Deadline @00037	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00037	00037 ] DEADLINE MISS!	HT19
+[ 00037	00037 ] SRT RESUME:	ST09 ( SubFrame: 3 )
+[ 00038	00038 ] SRT PREEMPT:	ST09 ( SubFrame: 3 )
+[ 00038	00038 ] HRT START:	HT20 ( SubFrame: 3 )	Deadline @00039	 delay max:230 cycles 	 delay min: 230 cycles
+[ 00039	00039 ] HRT COMPLETE:	HT20 ( SubFrame: 3 )
+[ 00039	00039 ] SRT RESUME:	ST09 ( SubFrame: 3 )
+[ 00039	00039 ] SRT COMPLETE:	ST09 ( SubFrame: 3 )
+[ 00039	00039 ] SRT START:	ST10 ( SubFrame: 3 )
+[ 00039	00039 ] SRT COMPLETE:	ST10 ( SubFrame: 3 )
+[ 00039	00039 ] SRT START:	ST11 ( SubFrame: 3 )
+[ 00039	00039 ] SRT COMPLETE:	ST11 ( SubFrame: 3 )
+[ 00039	00039 ] SRT START:	ST12 ( SubFrame: 3 )
+[ 00040	00040 ] SRT COMPLETE:	ST12 ( SubFrame: 4 )
+[ 00040	00040 ] SRT START:	ST13 ( SubFrame: 4 )
+[ 00040	00040 ] SRT COMPLETE:	ST13 ( SubFrame: 4 )
+[ 00040	00040 ] SRT START:	ST14 ( SubFrame: 4 )
+[ 00040	00040 ] SRT COMPLETE:	ST14 ( SubFrame: 4 )
+[ 00040	00040 ] SRT START:	ST15 ( SubFrame: 4 )
+[ 00040	00040 ] SRT COMPLETE:	ST15 ( SubFrame: 4 )
+[ 00040	00040 ] SRT START:	ST16 ( SubFrame: 4 )
+[ 00040	00040 ] SRT PREEMPT:	ST16 ( SubFrame: 4 )
+[ 00040	00040 ] HRT START:	HT21 ( SubFrame: 4 )	Deadline @00041	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00041	00041 ] HRT COMPLETE:	HT21 ( SubFrame: 4 )
+[ 00041	00041 ] SRT RESUME:	ST16 ( SubFrame: 4 )
+[ 00041	00041 ] SRT COMPLETE:	ST16 ( SubFrame: 4 )
+[ 00041	00041 ] SRT START:	ST17 ( SubFrame: 4 )
+[ 00041	00041 ] SRT COMPLETE:	ST17 ( SubFrame: 4 )
+[ 00041	00041 ] SRT START:	ST18 ( SubFrame: 4 )
+[ 00042	00042 ] SRT PREEMPT:	ST18 ( SubFrame: 4 )
+[ 00042	00042 ] HRT START:	HT22 ( SubFrame: 4 )	Deadline @00043	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00043	00043 ] HRT COMPLETE:	HT22 ( SubFrame: 4 )
+[ 00043	00043 ] SRT RESUME:	ST18 ( SubFrame: 4 )
+[ 00044	00044 ] SRT COMPLETE:	ST18 ( SubFrame: 4 )
+[ 00044	00044 ] SRT START:	ST19 ( SubFrame: 4 )
+[ 00044	00044 ] SRT COMPLETE:	ST19 ( SubFrame: 4 )
+[ 00044	00044 ] SRT START:	ST20 ( SubFrame: 4 )
+[ 00044	00044 ] SRT PREEMPT:	ST20 ( SubFrame: 4 )
+[ 00044	00044 ] HRT START:	HT23 ( SubFrame: 4 )	Deadline @00045	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00045	00045 ] HRT COMPLETE:	HT23 ( SubFrame: 4 )
+[ 00045	00045 ] SRT RESUME:	ST20 ( SubFrame: 4 )
+[ 00046	00046 ] SRT PREEMPT:	ST20 ( SubFrame: 4 )
+[ 00046	00046 ] HRT START:	HT24 ( SubFrame: 4 )	Deadline @00047	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00047	00047 ] HRT COMPLETE:	HT24 ( SubFrame: 4 )
+[ 00047	00047 ] SRT RESUME:	ST20 ( SubFrame: 4 )
+[ 00048	00048 ] SRT PREEMPT:	ST20 ( SubFrame: 4 )
+[ 00048	00048 ] HRT START:	HT25 ( SubFrame: 4 )	Deadline @00049	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00049	00049 ] HRT COMPLETE:	HT25 ( SubFrame: 4 )
+[ 00049	00049 ] SRT RESUME:	ST20 ( SubFrame: 4 )
+[ 00050	00050 ] SRT PREEMPT:	ST20 ( SubFrame: 5 )
+[ 00050	00050 ] HRT START:	HT26 ( SubFrame: 5 )	Deadline @00051	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00051	00051 ] HRT COMPLETE:	HT26 ( SubFrame: 5 )
+[ 00051	00051 ] SRT RESUME:	ST20 ( SubFrame: 5 )
+[ 00052	00052 ] SRT PREEMPT:	ST20 ( SubFrame: 5 )
+[ 00052	00052 ] HRT START:	HT27 ( SubFrame: 5 )	Deadline @00053	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00053	00053 ] HRT COMPLETE:	HT27 ( SubFrame: 5 )
+[ 00053	00053 ] SRT RESUME:	ST20 ( SubFrame: 5 )
+[ 00054	00054 ] SRT PREEMPT:	ST20 ( SubFrame: 5 )
+[ 00054	00054 ] HRT START:	HT28 ( SubFrame: 5 )	Deadline @00055	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00055	00055 ] HRT COMPLETE:	HT28 ( SubFrame: 5 )
+[ 00055	00055 ] SRT RESUME:	ST20 ( SubFrame: 5 )
+[ 00056	00056 ] SRT PREEMPT:	ST20 ( SubFrame: 5 )
+[ 00056	00056 ] HRT START:	HT29 ( SubFrame: 5 )	Deadline @00057	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00057	00057 ] HRT COMPLETE:	HT29 ( SubFrame: 5 )
+[ 00057	00057 ] SRT RESUME:	ST20 ( SubFrame: 5 )
+[ 00058	00058 ] SRT PREEMPT:	ST20 ( SubFrame: 5 )
+[ 00058	00058 ] HRT START:	HT30 ( SubFrame: 5 )	Deadline @00059	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00059	00059 ] HRT COMPLETE:	HT30 ( SubFrame: 5 )
+[ 00059	00059 ] SRT RESUME:	ST20 ( SubFrame: 5 )
+[ 00060	00060 ] SRT PREEMPT:	ST20 ( SubFrame: 6 )
+[ 00060	00060 ] HRT START:	HT31 ( SubFrame: 6 )	Deadline @00061	 delay max:231 cycles 	 delay min: 230 cycles
+[ 00061	00061 ] HRT COMPLETE:	HT31 ( SubFrame: 6 )
+[ 00061	00061 ] SRT RESUME:	ST20 ( SubFrame: 6 )
